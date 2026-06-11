@@ -22,6 +22,6 @@ def test_boot_banner_and_ticks(dut):
     elapsed = time.monotonic() - start_time
 
     assert prev_tick == start_tick + 4, "expected tick counter to increase by exactly 4"
-    assert 2.7 <= elapsed <= 3.6, (
+    assert 2.9 <= elapsed <= 3.5, (
         f"expected 4 ticks in ~3.2s at 800 ms period, observed {elapsed:.2f}s"
     )
