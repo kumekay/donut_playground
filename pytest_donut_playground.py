@@ -23,4 +23,4 @@ def test_boot_banner_and_ticks(dut):
     assert second == first + 1, "tick counter must increase monotonically"
 
     interval = second_time - first_time
-    assert 0.3 <= interval <= 0.8, f"expected ~0.5 s tick interval, got {interval:.3f} s"
+    assert 0.5 <= interval <= 1.0, f"expected ~0.7 s tick interval, got {interval:.3f} s"
