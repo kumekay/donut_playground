@@ -1,0 +1,39 @@
+name: "Copilot Setup Steps"
+
+on:
+  workflow_dispatch:
+  push:
+    paths: [.github/workflows/copilot-setup-steps.yml]
+  pull_request:
+    paths: [.github/workflows/copilot-setup-steps.yml]
+
+jobs:
+  # The job name must be exactly `copilot-setup-steps` — GitHub runs it to
+  # prepare the Copilot coding agent's environment before the agent starts.
+  copilot-setup-steps:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Cache ESP-IDF and tools
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/esp-idf
+            ~/.espressif
+          key: esp-idf-v5.5-esp32c3-${{ runner.os }}
+
+      - name: Install ESP-IDF (esp32c3 toolchain)
+        run: |
+          if [ ! -d "$HOME/esp-idf" ]; then
+            git clone --depth 1 --branch v5.5 --recursive --shallow-submodules \
+              https://github.com/espressif/esp-idf.git "$HOME/esp-idf"
+          fi
+          "$HOME/esp-idf/install.sh" esp32c3
+
+      - name: Install test dependencies and the Donut client
+        run: |
+          source "$HOME/esp-idf/export.sh"
+          pip install -r requirements-test.txt
