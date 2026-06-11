@@ -4,11 +4,22 @@ The DUT serial port is a Donut rfc2217 URL, e.g.:
 
     pytest --port "rfc2217://127.0.0.1:46211?ign_set_control"
 """
+import time
 
 
 def test_boot_banner_and_ticks(dut):
     dut.expect_exact("donut-playground ready", timeout=30)
     dut.expect(r"target: esp32c3, cores: \d+", timeout=10)
-    first = int(dut.expect(r"tick (\d+)", timeout=10).group(1))
-    second = int(dut.expect(r"tick (\d+)", timeout=10).group(1))
-    assert second == first + 1, "tick counter must increase monotonically"
+    start_tick = int(dut.expect(r"tick (\d+)", timeout=10).group(1))
+    start_time = time.monotonic()
+
+    end_tick = start_tick
+    for _ in range(4):
+        end_tick = int(dut.expect(r"tick (\d+)", timeout=10).group(1))
+
+    elapsed = time.monotonic() - start_time
+
+    assert end_tick == start_tick + 4, "tick counter must increase monotonically"
+    assert 2.6 <= elapsed <= 3.7, (
+        f"expected 4 ticks in ~3.2s at 800 ms period, observed {elapsed:.2f}s"
+    )
