@@ -6,8 +6,8 @@ The DUT serial port is a Donut rfc2217 URL, e.g.:
 """
 import time
 
-MIN_EXPECTED_DURATION = 2.9
-MAX_EXPECTED_DURATION = 3.5
+FOUR_TICKS_MIN_DURATION_SEC = 3.0
+FOUR_TICKS_MAX_DURATION_SEC = 3.5
 
 
 def test_boot_banner_and_ticks(dut):
@@ -25,6 +25,6 @@ def test_boot_banner_and_ticks(dut):
     elapsed = time.monotonic() - start_time
 
     assert prev_tick == start_tick + 4, "expected tick counter to increase by exactly 4"
-    assert MIN_EXPECTED_DURATION <= elapsed <= MAX_EXPECTED_DURATION, (
+    assert FOUR_TICKS_MIN_DURATION_SEC <= elapsed <= FOUR_TICKS_MAX_DURATION_SEC, (
         f"expected 4 ticks in ~3.2s at 800 ms period, observed {elapsed:.2f}s"
     )
