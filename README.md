@@ -32,9 +32,11 @@ pytest --port "rfc2217://127.0.0.1:NNNNN?ign_set_control"
 1. **Push this repo to github.com** — the Copilot coding agent only runs there.
 2. **Agent token:** mint an *agent* token in the Donut hub web UI
    (Leases view).
-3. **Secret:** repo → *Settings → Environments → New environment* named
-   exactly `copilot` → add secret `DONUT_TOKEN` with the minted token.
-   The coding agent receives it as an environment variable.
+3. **Secret:** repo → *Settings → Secrets and variables → Agents* →
+   *New repository secret* named `DONUT_TOKEN` with the minted token.
+   The coding agent receives it as an environment variable. (The older
+   "Actions environment named `copilot`" method is deprecated — secrets
+   added there now are not picked up.)
 4. **Firewall allowlist:** repo → *Settings → Code & automation → Copilot →
    Coding agent* → add `donut.espressif.tools` (and
    `https://donut.espressif.tools`) to the custom allowlist. The agent's
