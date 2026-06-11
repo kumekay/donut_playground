@@ -17,13 +17,20 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      # esp-donut needs python >= 3.13; ESP-IDF's install.sh builds its env
+      # from whatever python3 is first on PATH, so pin it before installing.
+      - name: Set up Python 3.13
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
       - name: Cache ESP-IDF and tools
         uses: actions/cache@v4
         with:
           path: |
             ~/esp-idf
             ~/.espressif
-          key: esp-idf-v5.5-esp32c3-${{ runner.os }}
+          key: esp-idf-v5.5-esp32c3-py3.13-${{ runner.os }}
 
       - name: Install ESP-IDF (esp32c3 toolchain)
         run: |
