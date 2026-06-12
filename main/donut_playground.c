@@ -17,6 +17,6 @@ void app_main(void)
     int n = 0;
     while (true) {
         printf("tick %d\n", n++);
-        vTaskDelay(pdMS_TO_TICKS(500));
+        vTaskDelay(pdMS_TO_TICKS(2000));
     }
 }
