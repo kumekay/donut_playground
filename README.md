@@ -43,7 +43,7 @@ pytest --port "rfc2217://127.0.0.1:NNNNN?ign_set_control"
    egress firewall blocks the hub's WebSocket otherwise.
 5. **Devices:** make sure a hands box with `esp32c3`-tagged devkits is
    connected to the hub and visible to the token (public, or owned by you).
-6. `.github/workflows/copilot-setup-steps.yml` pre-installs ESP-IDF v5.5 +
+6. `.github/workflows/copilot-setup-steps.yml` pre-installs ESP-IDF v6.0 +
    the esp32c3 toolchain into the agent's environment (cached between runs);
    `.github/copilot-instructions.md` teaches the agent the
    build → lease → flash → test workflow.
