@@ -16,11 +16,11 @@ def test_boot_banner_and_ticks(dut):
     first = int(first_match.group(1))
     first_time = time.monotonic()
 
-    second_match = dut.expect(r"tick (\d+)", timeout=10)
+    second_match = dut.expect(r"tick (\d+)", timeout=15)
     second = int(second_match.group(1))
     second_time = time.monotonic()
 
     assert second == first + 1, "tick counter must increase monotonically"
 
     interval = second_time - first_time
-    assert 0.3 <= interval <= 0.8, f"expected ~0.5 s tick interval, got {interval:.3f} s"
+    assert 1.5 <= interval <= 2.5, f"expected ~2.0 s tick interval, got {interval:.3f} s"
