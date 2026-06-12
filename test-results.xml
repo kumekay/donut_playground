@@ -1,0 +1,131 @@
+<testsuites name="pytest tests"><testsuite name="pytest" errors="1" failures="0" skipped="0" tests="1" time="20.227" timestamp="2026-06-12T08:15:26.224463+00:00" hostname="runnervm1li68"><testcase classname="pytest_donut_playground" name="test_boot_banner_and_ticks" time="20.102"><error message="failed on setup with &quot;esptool.util.FatalError: Failed to connect to ESP32-C3: Download mode successfully detected, but getting no sync reply: The serial TX path seems to be down.&#10;For troubleshooting steps visit: https://docs.espressif.com/projects/esptool/en/latest/troubleshooting.html&quot;">args = ()
+kwargs = {'_fixture_classes_and_options': ClassCliOptions(classes={'app': &lt;class 'pytest_embedded_idf.app.IdfApp'&gt;, 'serial': &lt;...fApp object at 0x7fadf4391400&gt;, 'msg_queue': &lt;AutoProxy[MessageQueue] object, typeid 'MessageQueue' at 0x7fadf4390c20&gt;}
+_close_or_terminate = &lt;function multi_dut_generator_fixture.&lt;locals&gt;.wrapper.&lt;locals&gt;._close_or_terminate at 0x7fadf43abf60&gt;
+res = None
+
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        def _close_or_terminate(obj):
+            if obj is None:
+                del obj
+                return
+    
+            try:
+                if isinstance(obj, subprocess.Popen | multiprocessing.process.BaseProcess):
+                    obj.terminate()
+                    obj.kill()
+                elif isinstance(obj, io.IOBase):
+                    try:
+                        obj.close()
+                    except Exception as e:
+                        logging.debug('file %s closed failed with error: %s', obj, str(e))
+                else:
+                    try:
+                        obj.close()
+                    except AttributeError:
+                        try:
+                            obj.terminate()
+                        except AttributeError:
+                            pass
+                    except Exception as e:
+                        logging.debug('Not properly caught object %s: %s', obj, str(e))
+            except Exception as e:
+                logging.debug('%s: %s', obj, str(e))
+                return  # swallow up all error
+            finally:
+                referrers = gc.get_referrers(obj)
+                for _referrer in referrers:
+                    if isinstance(_referrer, list):
+                        for _i, val in enumerate(_referrer):
+                            if val is obj:
+                                _referrer[_i] = None
+                    elif isinstance(_referrer, dict):
+                        for key, value in _referrer.items():
+                            if value is obj:
+                                _referrer[key] = None
+                del obj
+    
+        if _COUNT == 1:
+            res = None
+            try:
+&gt;               res = func(*args, **kwargs)
+                      ^^^^^^^^^^^^^^^^^^^^^
+
+../../../.espressif/python_env/idf6.0_py3.13_env/lib/python3.13/site-packages/pytest_embedded/plugin.py:502: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../../../.espressif/python_env/idf6.0_py3.13_env/lib/python3.13/site-packages/pytest_embedded/plugin.py:1202: in serial
+    return serial_gn(**locals())
+           ^^^^^^^^^^^^^^^^^^^^^
+../../../.espressif/python_env/idf6.0_py3.13_env/lib/python3.13/site-packages/pytest_embedded/dut_factory.py:499: in serial_gn
+    return cls(**_drop_none_kwargs(kwargs))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../../../.espressif/python_env/idf6.0_py3.13_env/lib/python3.13/site-packages/pytest_embedded_idf/serial.py:42: in __init__
+    super().__init__(
+../../../.espressif/python_env/idf6.0_py3.13_env/lib/python3.13/site-packages/pytest_embedded_serial_esp/serial.py:98: in __init__
+    self.esp = esptool.get_default_connected_device(
+../../../.espressif/python_env/idf6.0_py3.13_env/lib/python3.13/site-packages/esptool/__init__.py:1347: in get_default_connected_device
+    _esp.connect(before, connect_attempts)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;esptool.targets.esp32c3.ESP32C3ROM object at 0x7fadf4391940&gt;, mode = 'default-reset', attempts = 3
+detecting = False, warnings = True
+
+    def connect(
+        self,
+        mode="default-reset",
+        attempts=DEFAULT_CONNECT_ATTEMPTS,
+        detecting=False,
+        warnings=True,
+    ):
+        """Try connecting repeatedly until successful, or giving up"""
+        if warnings and mode in ["no-reset", "no-reset-no-sync"]:
+            log.note(
+                f'Pre-connection option "{mode}" was selected. '
+                "Connection may fail if the chip is not in bootloader "
+                "or flasher stub mode."
+            )
+    
+        if self._port.name.startswith("socket:"):
+            mode = "no-reset"  # not possible to toggle DTR/RTS over a TCP socket
+            log.note(
+                "It's not possible to reset the chip over a TCP socket. "
+                "Automatic resetting to bootloader has been disabled, "
+                "reset the chip manually."
+            )
+    
+        log.print("Connecting...", end="", flush=True)
+        last_error = None
+    
+        reset_sequence = self._construct_reset_strategy_sequence(mode)
+        try:
+            for _, reset_strategy in zip(
+                range(attempts) if attempts &gt; 0 else itertools.count(),
+                itertools.cycle(reset_sequence),
+            ):
+                last_error = self._connect_attempt(reset_strategy, mode)
+                if last_error is None:
+                    break
+        finally:
+            log.print("")  # end 'Connecting...' line
+    
+        if last_error is not None:
+            additional_msg = ""
+            if self.CHIP_NAME == "ESP32-C2" and self._port.baudrate &lt; 115200:
+                additional_msg = (
+                    "\nNote: Please set a higher baud rate"
+                    " if ESP32-C2 doesn't connect"
+                    " (at least 115200 Bd is recommended)."
+                )
+            self._port.close()
+&gt;           raise FatalError(
+                "Failed to connect to {}: {}"
+                f"{additional_msg}"
+                "\nFor troubleshooting steps visit: "
+                "https://docs.espressif.com/projects/esptool/en/latest/troubleshooting.html".format(  # noqa E501
+                    self.CHIP_NAME, last_error
+                )
+            )
+E           esptool.util.FatalError: Failed to connect to ESP32-C3: Download mode successfully detected, but getting no sync reply: The serial TX path seems to be down.
+E           For troubleshooting steps visit: https://docs.espressif.com/projects/esptool/en/latest/troubleshooting.html
+
+../../../.espressif/python_env/idf6.0_py3.13_env/lib/python3.13/site-packages/esptool/loader.py:881: FatalError</error></testcase></testsuite></testsuites>
