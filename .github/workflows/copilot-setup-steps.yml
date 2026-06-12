@@ -30,12 +30,12 @@ jobs:
           path: |
             ~/esp-idf
             ~/.espressif
-          key: esp-idf-v5.5-esp32c3-py3.13-${{ runner.os }}
+          key: esp-idf-release-v5.5-esp32c3-py3.13-${{ runner.os }}
 
       - name: Install ESP-IDF (esp32c3 toolchain)
         run: |
           if [ ! -d "$HOME/esp-idf" ]; then
-            git clone --depth 1 --branch v5.5 --recursive --shallow-submodules \
+            git clone --depth 1 --branch release/v5.5 --recursive --shallow-submodules \
               https://github.com/espressif/esp-idf.git "$HOME/esp-idf"
           fi
           "$HOME/esp-idf/install.sh" esp32c3
